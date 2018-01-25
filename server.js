@@ -19,6 +19,9 @@ var mazeStart;
 var mazeEnd;
 var rows = 10;  // size of maze horizontally
 var cols = 10; // size of maze vertically
+var startLocation;
+
+
 
 /*
  * The getMazeData function packages up important information about a maze
@@ -60,6 +63,14 @@ function getMazeData() {
 	return mazeData;
 }
 
+// Player information
+function getPlayerData(){
+	var playerData = {
+		startLocation: startLocation
+	};
+	return playerData;
+}
+
 /*
  * This is our event handler for a connection.
  * That is to say, any code written here executes when a client makes a connection to the server
@@ -72,13 +83,16 @@ io.on("connection", function(socket) {
 
 	// Print an acknowledge to the server's console to confirm a player has connected
 	console.log("A player has connected - sending maze data...");
-
+	// Print an acknowledge to the server's console to confirm a player has spawned
+	spawnPlayer();
+	console.log("Player spawned!");
 	/*
 	 * Here we send all information about a maze to the client that has just connected
 	 * For full details about the data being sent, check the getMazeData method
 	 * This message triggers the socket.on("maze data"... event handler in the client
 	 */
 	socket.emit("maze data", getMazeData());
+	socket.emit("player data", getPlayerData());
 
 });
 
@@ -100,6 +114,13 @@ function generateMaze() {
 	};
 }
 
+function spawnPlayer(){
+	startLocation = {
+		x: 0,
+		y: 0
+	};
+}
+
 /*
  * Start the server, listening on port 8081.
  * Once the server has started, output confirmation to the server's console.
@@ -107,7 +128,7 @@ function generateMaze() {
  *
  */
 server.listen(8081, function() {
-	console.log("Map server has started - connect to http://localhost:8081")
+	console.log("Map server has started - connect to http://192.168.0.7:8081")
 	generateMaze();
 	console.log("Initial Maze generated!");
 });
