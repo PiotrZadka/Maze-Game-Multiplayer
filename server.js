@@ -1,4 +1,4 @@
-// See Real-Time Servers II: File Servers for understanding 
+// See Real-Time Servers II: File Servers for understanding
 // how we set up and use express
 var express = require("express");
 var app = express();
@@ -17,12 +17,12 @@ app.use(express.static("public"));
 var maze;
 var mazeStart;
 var mazeEnd;
-var rows = 10;
-var cols = 10;
+var rows = 10;  // size of maze horizontally
+var cols = 10; // size of maze vertically
 
 /*
  * The getMazeData function packages up important information about a maze
- * into an object and prepares it for sending in a message. 
+ * into an object and prepares it for sending in a message.
  *
  * The members of the returned object are as follows:
  * - mazeSize
@@ -64,7 +64,7 @@ function getMazeData() {
  * This is our event handler for a connection.
  * That is to say, any code written here executes when a client makes a connection to the server
  * (i.e. when the page is loaded)
- * 
+ *
  * See Real-Time Servers III: socket.io and Messaging for help understanding how
  * we set up and use socket.io
  */
@@ -72,14 +72,14 @@ io.on("connection", function(socket) {
 
 	// Print an acknowledge to the server's console to confirm a player has connected
 	console.log("A player has connected - sending maze data...");
-	
+
 	/*
 	 * Here we send all information about a maze to the client that has just connected
 	 * For full details about the data being sent, check the getMazeData method
 	 * This message triggers the socket.on("maze data"... event handler in the client
 	 */
 	socket.emit("maze data", getMazeData());
-	
+
 });
 
 /*
@@ -90,13 +90,13 @@ io.on("connection", function(socket) {
  */
 function generateMaze() {
 	maze = mazeGenerator(rows, cols);
-	mazeStart = { 
-		x: 0, 
-		y: 0 
+	mazeStart = {
+		x: 0,
+		y: 0
 	};
-	mazeEnd = { 
-		x: cols-1, 
-		y: rows-1 
+	mazeEnd = {
+		x: cols-1,
+		y: rows-1
 	};
 }
 

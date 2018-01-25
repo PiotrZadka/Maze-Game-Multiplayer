@@ -1,13 +1,13 @@
 {
   "name": "6g5z2107_1cwk50",
   "version": "1.0.0",
-  "description": "Skeleton code provided for the completion of 6G5Z2107, Web Design and Development, 1CWK50 - The JavaScript-focused Assessment at Manchester Metropolitan University.",
+  "description": "Assignment solution for the completion of 6G5Z2107, Web Design and Development, 1CWK50 - The JavaScript-focused Assessment at Manchester Metropolitan University.",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
-  "author": "Matthew Crossley",
+  "author": "Piotr Zadka",
   "license": "MIT",
   "dependencies": {
     "express": "^4.16.2",

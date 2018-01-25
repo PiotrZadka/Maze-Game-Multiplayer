@@ -1,6 +1,6 @@
-/* These two variables control how many cells we divide the canvas into 
- * horizontally (cellsWide) and vertically (cellsHigh). 
- * They are used in the graphics calculations later, to establish the 
+/* These two variables control how many cells we divide the canvas into
+ * horizontally (cellsWide) and vertically (cellsHigh).
+ * They are used in the graphics calculations later, to establish the
  * size of each cell 'on the fly' so that they can change dynamically.
  *
  * They are set upon receipt of the 'maze data' message.
@@ -32,7 +32,7 @@ var maze = [];
 var mazeStart = {};
 var mazeEnd = {};
 
-/* 
+/*
  * Establish a connection to our server
  * We will need to reuse the 'socket' variable to both send messages
  * and receive them, by way of adding event handlers for the various
@@ -45,12 +45,12 @@ var mazeEnd = {};
  * we set up and use socket.io
  *
  */
-var socket = io.connect("http://localhost:8081");
+var socket = io.connect("http://192.168.0.7:8081");
 
 /*
  * This is the event handler for the 'maze data' message
  * When a 'maze data' message is received from the server, this block of code executes
- * 
+ *
  * The server is sending us either initial information about a maze, or,
  * updated information about a maze, and so we want to replace our existing
  * maze variables with the new information.
@@ -89,22 +89,22 @@ function startAnimating(fps) {
  */
 function animate() {
 	requestAnimationFrame(animate);
-	
+
 	var now = Date.now();
 	var elapsed = now - then;
-		
+
 	if (elapsed > fpsInterval) {
 		// Acquire both a canvas (using jQuery) and its associated context
 		var canvas = $("canvas").get(0);
 		var context = canvas.getContext("2d");
-			
+
 		// Calculate the width and height of each cell in our maze
 		var cellWidth = canvas.width/cellsWide;
 		var cellHeight = canvas.height/cellsHigh;
-		
+
 		// Clear the drawing area each animation cycle
 		context.clearRect(0, 0, canvas.width, canvas.height);
-		
+
 		// Change the current colour to yellow, to draw the 'goal' state
 		context.fillStyle = "yellow";
 		// The goal is calculated by multiplying the cell location (mazeEnd.x, mazeEnd.y)
@@ -113,19 +113,19 @@ function animate() {
 		context.fillRect(mazeEnd.x * cellWidth,
 						 mazeEnd.y * cellHeight,
 						 cellWidth, cellHeight);
-	
+
 		// Change the current colour to black, and the line width to 2
 		context.fillStyle = "black";
 		context.lineWidth = 2;
-			
+
 		// Loop through the 2D array, in both rows and columns...
 		for (i = 0; i < maze.length; i++) {
-		
+
 			for (j = 0; j < maze[i].length; j++) {
-			
+
 				// ... and for every cell in the maze, check where it has walls
 				// For every wall we find, draw that wall in an appropriate place
-				
+
 				if (maze[i][j].top) {
 					context.beginPath();
 					context.moveTo(maze[i][j].x*cellWidth, maze[i][j].y*cellHeight);
@@ -133,7 +133,7 @@ function animate() {
 					context.stroke();
 					context.closePath();
 				}
-				
+
 				if (maze[i][j].right) {
 					context.beginPath();
 					context.moveTo((maze[i][j].x+1)*cellWidth,maze[i][j].y*cellHeight);
@@ -141,7 +141,7 @@ function animate() {
 					context.stroke();
 					context.closePath();
 				}
-				
+
 				if (maze[i][j].bottom) {
 					context.beginPath();
 					context.moveTo((maze[i][j].x+1)*cellWidth,(maze[i][j].y+1)*cellHeight);
@@ -149,15 +149,15 @@ function animate() {
 					context.stroke();
 					context.closePath();
 				}
-				
+
 				if (maze[i][j].left) {
 					context.beginPath();
 					context.moveTo(maze[i][j].x*cellWidth,(maze[i][j].y+1)*cellHeight);
 					context.lineTo(maze[i][j].x*cellWidth, maze[i][j].y*cellHeight);
 					context.stroke();
 					context.closePath();
-				}			
+				}
 			}
-		}	
+		}
 	}
 }
