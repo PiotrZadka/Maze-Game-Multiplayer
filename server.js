@@ -17,11 +17,10 @@ app.use(express.static("public"));
 var maze;
 var mazeStart;
 var mazeEnd;
-var rows = 10;  // size of maze horizontally
-var cols = 10; // size of maze vertically
-var startLocation;
-
-
+var rows = 10;
+var cols = 10;
+var x = 0;
+var y = 0;
 
 /*
  * The getMazeData function packages up important information about a maze
@@ -63,13 +62,17 @@ function getMazeData() {
 	return mazeData;
 }
 
-// Player information
-function getPlayerData(){
+function getPlayerData() {
 	var playerData = {
-		startLocation: startLocation
+		location: {
+			x: x,
+			y: y
+		}
 	};
 	return playerData;
 }
+
+
 
 /*
  * This is our event handler for a connection.
@@ -80,21 +83,32 @@ function getPlayerData(){
  * we set up and use socket.io
  */
 io.on("connection", function(socket) {
-
+	console.log(socket.id);
 	// Print an acknowledge to the server's console to confirm a player has connected
 	console.log("A player has connected - sending maze data...");
-	// Print an acknowledge to the server's console to confirm a player has spawned
-	spawnPlayer();
-	console.log("Player spawned!");
 	/*
 	 * Here we send all information about a maze to the client that has just connected
 	 * For full details about the data being sent, check the getMazeData method
 	 * This message triggers the socket.on("maze data"... event handler in the client
 	 */
 	socket.emit("maze data", getMazeData());
-	socket.emit("player data", getPlayerData());
+	// Pass data of a new player to the client
+	io.sockets.emit("player data", getPlayerData());
 
+	// Upon recieving new key press update player location
+	socket.on("key", function(key){
+		var key = key.key;
+		playerMove(key);
+		io.sockets.emit("player data", getPlayerData());
+	});
+
+	socket.on("disconnect",function(){
+		console.log("Player disconnected!");
+	});
 });
+
+
+
 
 /*
  * The generateMaze function uses the generate-maze module to create a random maze,
@@ -114,11 +128,29 @@ function generateMaze() {
 	};
 }
 
-function spawnPlayer(){
-	startLocation = {
-		x: 0,
-		y: 0
-	};
+function playerMove(key){
+	// Check if there is a wall (true)
+	var top = maze[y][x].top;
+	var bottom = maze[y][x].bottom;
+	var left = maze[y][x].left;
+	var right = maze[y][x].right;
+
+	// up
+	if(!top && key == 'w'){
+		y -= 1;
+	}
+	// down
+	if(!bottom && key == 's'){
+		y += 1;
+	}
+	// left
+	if(!left && key == 'a'){
+		x -= 1;
+	}
+	// right
+	if(!right && key == 'd'){
+		x += 1;
+	}
 }
 
 /*
@@ -128,7 +160,7 @@ function spawnPlayer(){
  *
  */
 server.listen(8081, function() {
-	console.log("Map server has started - connect to http://192.168.0.7:8081")
+	console.log("Map server has started - connect to http://localhost:8081")
 	generateMaze();
 	console.log("Initial Maze generated!");
 });

@@ -7,6 +7,10 @@
  */
 var cellsWide;
 var cellsHigh;
+
+var playerX;
+var playerY;
+
 /* These three variables hold information about the maze.
  * - maze, a two-dimensional array of objects each containing members:
  * -- x, an integer describing the horizontal position of the cell
@@ -30,6 +34,7 @@ var cellsHigh;
 var maze = [];
 var mazeStart = {};
 var mazeEnd = {};
+
 /*
  * Establish a connection to our server
  * We will need to reuse the 'socket' variable to both send messages
@@ -43,12 +48,7 @@ var mazeEnd = {};
  * we set up and use socket.io
  *
  */
-
- /* Player variables
- */
-  var playerLocation;
-
-var socket = io.connect("http://192.168.0.7:8081");
+var socket = io.connect("http://localhost:8081");
 
 /*
  * This is the event handler for the 'maze data' message
@@ -68,13 +68,17 @@ socket.on("maze data", function(data) {
 	mazeStart = data.mazeStart;
 	mazeEnd = data.mazeEnd;
 });
-/*
- * This is the event handler for the 'player data' message
- * When a 'player data' message is received from the server, this block of code executes
- */
-socket.on("player data", function(data) {
-	playerLocation = data.startLocation;
+
+socket.on("player data", function(data){
+	playerX = data.location.x;
+	playerY = data.location.y;
 });
+
+function checkKey(){
+	$( document ).keypress(function(key){
+		socket.emit("key", {key: key.key});
+	});
+}
 
 /*
  * Once our page is fully loaded and ready, we call startAnimating
@@ -83,36 +87,8 @@ socket.on("player data", function(data) {
  */
 $(document).ready(function() {
 	startAnimating(60);
-	playerBehaviours();
+	checkKey();
 });
-
-//Controlling player block
-function playerBehaviours(){
-	$( document ).keypress(function(key) {
-			movingPlayer(playerLocation.x,playerLocation.y,key.keyCode);
-	});
-}
-
-function movingPlayer(x,y,key){
-	// x,y are player location to check if a move is possible
-	var top = maze[y][x].top;
-	var bottom = maze[y][x].bottom;
-	var left = maze[y][x].left;
-	var right = maze[y][x].right;
-
-	if(!top && key == 119){
-		playerLocation.y -= 1;
-	}
-	if(!bottom && key == 115){
-		playerLocation.y += 1;
-	}
-	if(!left && key == 97){
-		playerLocation.x -= 1;
-	}
-	if(!right && key == 100){
-		playerLocation.x += 1;
-	}
-}
 
 /*
  * The startAnimating function kicks off our animation (see Games on the Web I - HTML5 Graphics and Animations).
@@ -145,7 +121,7 @@ function animate() {
 		context.clearRect(0, 0, canvas.width, canvas.height);
 
 		// Change the current colour to yellow, to draw the 'goal' state
-		context.fillStyle = "green";
+		context.fillStyle = "yellow";
 		// The goal is calculated by multiplying the cell location (mazeEnd.x, mazeEnd.y)
 		// by the cellWidth and cellHeight respectively
 		// Refer to: Games on the Web I - HTML5 Graphics and Animations, Lab Exercise 2
@@ -153,14 +129,13 @@ function animate() {
 						 mazeEnd.y * cellHeight,
 						 cellWidth, cellHeight);
 
-		// Spawn player
+		// playerBlock
 		context.fillStyle = "red";
-		context.fillRect(playerLocation.x * cellWidth,
-						 playerLocation.y * cellHeight,
+		context.fillRect(playerX * cellWidth,
+						 playerY * cellHeight,
 						 cellWidth, cellHeight);
 
 		// Change the current colour to black, and the line width to 2
-		// wall color and size
 		context.fillStyle = "black";
 		context.lineWidth = 2;
 
