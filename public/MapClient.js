@@ -29,8 +29,13 @@ socket.on("New Player",function(players){
 			y:players[id].y
 		});
 	}
-	console.log(player);
 });
+
+//When player disconnects remove him from canvas
+socket.on("Disconnected",function(disPlayer){
+ delete player[disPlayer];
+});
+
 
 function drawPlayer(x,y,cellWidth,cellHeight){
 	var canvas = $("canvas").get(0);

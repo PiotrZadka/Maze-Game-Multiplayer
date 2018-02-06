@@ -25,18 +25,22 @@ function getMazeData() {
 	return mazeData;
 }
 
+//Player connects to the server
 io.on("connection", function(socket) {
 
-	//add new socket to array
+	//Add new player to array
 	socket.on("New Player",function(){
 		players[socket.id] = {
 				x: 0,
 				y: 0
 			};
-			console.log(players);
+			//Greet new player
+			console.log("New player with ID: "+socket.id+"has connected.");
+			//Send new player parameters to the client
 			socket.emit("New Player",players);
 	});
 
+	//Player press a button
 	socket.on("key",function(key){
 		player = players[socket.id] || {};
 		var top = maze[player.y][player.x].top;
@@ -63,7 +67,17 @@ io.on("connection", function(socket) {
 		io.sockets.emit("New Player",players)
 	});
 
+	//Send new maze parameters to client to generate new maze.
 	socket.emit("maze data", getMazeData());
+	//Player disconnects.
+	socket.on("disconnect", function () {
+		//Remove player information from the array
+		console.log("Player with ID: "+socket.id+"has quit the game.");
+		//Let client know to remove specific player
+		io.sockets.emit("Disconnected",socket.id);
+		//remove player from server
+		delete players[socket.id];
+	});
 });
 
 
