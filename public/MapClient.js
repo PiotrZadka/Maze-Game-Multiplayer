@@ -1,3 +1,7 @@
+$(document).ready(function() {
+	startAnimating(10);
+});
+
 var cellsWide;
 var cellsHigh;
 
@@ -6,6 +10,18 @@ var mazeStart = {};
 var mazeEnd = {};
 var socket = io.connect("http://localhost:8081");
 var player = [];
+
+
+var fpsInterval;
+var then;
+var shift = 0;
+var frameWidth = 107;
+var frameHeight = 140;
+var totalFrames = 8;
+var currentFrame = 0;
+//Loading image
+var img = document.createElement("img");
+img.src="player.png";
 
 socket.on("maze data", function(data) {
 	cellsWide = data.mazeSize.cols;
@@ -47,10 +63,6 @@ function drawPlayer(x,y,cellWidth,cellHeight){
 					 cellWidth, cellHeight);
 }
 
-$(document).ready(function() {
-	startAnimating(60);
-});
-
 function startAnimating(fps) {
 	fpsInterval = 1000/fps;
 	then = Date.now();
@@ -58,13 +70,11 @@ function startAnimating(fps) {
 }
 
 function animate() {
-	requestAnimationFrame(animate);
-
 	var now = Date.now();
 	var elapsed = now - then;
 
 	if (elapsed > fpsInterval) {
-
+		then = now - (elapsed % fpsInterval);
 		var canvas = $("canvas").get(0);
 		var context = canvas.getContext("2d");
 
@@ -79,12 +89,19 @@ function animate() {
 						 cellWidth, cellHeight);
 
 		for(var id in player){
-			drawPlayer(player[id].x,player[id].y,cellWidth,cellHeight);
+			//drawPlayer(player[id].x,player[id].y,cellWidth,cellHeight);
+			context.drawImage(img,shift,0,frameWidth,frameHeight,(player[id].x)*cellWidth,(player[id].y)*cellHeight,cellWidth,cellHeight);
+		}
+		shift += frameWidth + 1;
+		currentFrame++;
+
+		if (currentFrame == totalFrames) {
+			shift = 0;
+			currentFrame = 0;
 		}
 
 		context.fillStyle = "black";
 		context.lineWidth = 2;
-
 		for (i = 0; i < maze.length; i++) {
 
 			for (j = 0; j < maze[i].length; j++) {
@@ -123,4 +140,5 @@ function animate() {
 			}
 		}
 	}
+	requestAnimationFrame(animate);
 }
