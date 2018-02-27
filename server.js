@@ -15,7 +15,8 @@ var mazeEnd;
 var rows = 10;
 var cols = 10;
 var players = {};
-
+var playerName;
+var defaultColor = "#ff0000";
 /*
  * The getMazeData function packages up important information about a maze
  * into an object and prepares it for sending in a message.
@@ -58,12 +59,24 @@ function getMazeData() {
 
 //Player connects to the server
 io.on("connection", function(socket) {
+	var nameID = socket.id;
+	//Set new player name and color
+	socket.on("newName",function(name){
+		player = players[socket.id] || {};
+		var oldName = player.name;
+		player.name = name.name;
+		player.color = name.playerColor;
+		console.log("Player "+oldName+" is now "+player.name);
+		io.sockets.emit("New Player",players)
+	});
 
 	//Add new player to array
 	socket.on("New Player",function(){
 		players[socket.id] = {
 				x: 0,
-				y: 0
+				y: 0,
+				name: nameID,
+				color: defaultColor
 			};
 			//Greet new player
 			console.log("New player with ID: "+socket.id+"has connected.");
@@ -80,19 +93,19 @@ io.on("connection", function(socket) {
 		var right = maze[player.y][player.x].right;
 
 		// up
-		if(!top && key == 'w'){
+		if(!top && key == 'w' || !top && key == 'upButton'){
 			player.y -= 1;
 		}
 		// down
-		if(!bottom && key == 's'){
+		if(!bottom && key == 's' || !bottom && key == 'downButton'){
 			player.y += 1;
 		}
 		// left
-		if(!left && key == 'a'){
+		if(!left && key == 'a' || !left && key == 'leftButton'){
 			player.x -= 1;
 		}
 		// right
-		if(!right && key == 'd'){
+		if(!right && key == 'd' || !right && key == 'rightButton'){
 			player.x += 1;
 		}
 		io.sockets.emit("New Player",players)

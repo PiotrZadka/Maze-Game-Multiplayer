@@ -42,8 +42,24 @@ socket.on("maze data", function(data) {
 
 // Socket to inform server about new key stroke from player
 socket.emit("New Player");
+
+//Event when keyboard key is pressed
 $(document).keypress(function(event){
 	socket.emit("key",event.key);
+});
+
+//Event when control button is pressed
+$(document).ready(function(){
+	$("button").click(function() {
+	     socket.emit("key",this.id);
+	});
+
+	//Event to change name
+	$("#nameSubmit").click(function(){
+			var playerColor = $("#colorPicker").val();
+			var name = $("#nameInput").val();
+			socket.emit("newName",{name,playerColor});
+	});
 });
 
 // Socket listening for new player settings
@@ -51,7 +67,9 @@ socket.on("New Player",function(players){
 	for(var id in players){
 		player[id] =({
 			x:players[id].x,
-			y:players[id].y
+			y:players[id].y,
+			name:players[id].name,
+			color:players[id].color
 		});
 	}
 });
@@ -84,6 +102,10 @@ function drawPlayer(player,x,y){
 		x, 							// sprite width on canvas
 		y 							// sprite height on canvas
 	);
+	context.fillStyle = player.color;
+	context.font="15px Arial";
+	//Player Name , X pos, Y pos + sprite Y pos
+	context.fillText(player.name,(player.x)*x,(player.y)*y + y);
 }
 
 // Function handling all animation happening on the canvas (players/maze)

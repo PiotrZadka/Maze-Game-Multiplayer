@@ -1,0 +1,52 @@
+/*Div that stores ControllsBox & nameChangeBox */
+#playerArea{
+  position: fixed;
+  left: 500px;
+}
+
+/* Div that stores rows of buttons */
+#controllsBox{
+  position: relative;
+  background-color: grey;
+  float: left;
+  left: 20px;
+}
+
+/* Buttons inside ControllsBox div*/
+#controllsBox button{
+  font-size: 10px;
+  padding: 10px 20px 10px 20px;
+}
+
+/*Div rows in ControllsBox */
+#upBox, #midBox, #botBox{
+  position: relative;
+  text-align: center;
+  font-size: 10px;
+}
+/* Div Name change form */
+#nameChangeBox{
+  background-color: grey;
+  float: left;
+  clear: left;
+  width: 170px;
+  height: 50px;
+  margin-top: 20px;
+  margin-left: 20px;
+  font-size: 10px;
+  padding: 10px 20px 10px 20px;
+}
+
+/*Div below canvas for player logs */
+#GameLog{
+  background: black;
+  float: left;
+  clear: left;
+  margin-top: 10px;
+  width: 504px;
+  height: 200px;
+}
+/* Maze Canvas */
+#gameCanvas{
+  float: left;
+}

@@ -2,22 +2,47 @@
 <html>
 	<head>
 		<title>Maze Game</title>
-		
+
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 		<script src="socket.io/socket.io.js"></script>
 		<script src="MapClient.js"></script>
-		
+		<link rel="stylesheet" type="text/css" href="styles.css">
 	</head>
-	
+
 	<body>
-	
-		<canvas style="border: 2px solid black" 
-				width="500" 
+		<h1>MAZE GAME</h1>
+		<canvas id="gameCanvas"style="border: 2px solid black"
+				width="500"
 				height="500">
-				
 			Your browser has no Canvas support!
 		</canvas>
-	
+
+		<div id="playerArea">
+			<div id="controllsBox">
+				<div id="upBox">
+					<button id="upButton">UP</button>
+				</div>
+				<div id="midBox">
+					<button id="leftButton">LEFT</button>
+					<button id="rightButton">RIGHT</button>
+				</div>
+				<div id="botBox">
+					<button id="downButton">DOWN</button>
+				</div>
+			</div>
+
+			<div id="nameChangeBox">
+				<form>
+					<input id ="nameInput" type="text" placeholder="Change your name..." value="">
+					<input id ="colorPicker" type="color" value="#ff0000">
+					<input id ="nameSubmit" type="button" value="Change Name">
+				</form>
+			</div>
+		</div>
+
+		<div id="GameLog">
+		</div>
+
 	</body>
 
 </html>
