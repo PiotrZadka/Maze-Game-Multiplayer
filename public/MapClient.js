@@ -14,9 +14,14 @@ var mazeEnd = {};
 
 // Connection and array to store new sockets(players)
 var socket = io.connect("http://localhost:8081");
+//Comment out above and remove coment below to play over (my)home network.
+//var socket = io.connect("192.168.0.5:8081");
 var player = [];
 var x = 0;
 var y = 0;
+
+// Swipng
+var swipe;
 
 // Player animation variables
 var fpsInterval;
@@ -52,7 +57,43 @@ $(document).keypress(function(event){
 $(document).ready(function(){
 	$("button").click(function() {
 	     socket.emit("key",this.id);
-	});
+});
+
+//Game Log updates
+//Update log upon player connection
+socket.on("New Log Connected",function(text){
+	$("#GameLog").append("<h1>Player "+text+" has Connected</h1>");
+});
+
+//Update log upon player disconnection
+socket.on("New Log Disconnected",function(text){
+	$("#GameLog").append("<h1>Player "+text+" has Disconnected</h1>");
+	$("h1").first().remove()
+});
+
+socket.on("New Log Name",function(text){
+	$("#GameLog").append("<h1>Player "+text.nameOld+" is now "+text.nameNew+"</h1>");
+	$("h1").first().remove()
+});
+
+//Event when swiping on canvas
+$("canvas").on("swiperight",function() {
+		swipe = "d";
+		socket.emit("key",swipe);
+		})
+		.on("swipeleft",function(){
+			swipe = "a";
+			socket.emit("key",swipe);
+		})
+		.on("swipeup",function(){
+			swipe = "w";
+			socket.emit("key",swipe);
+		})
+		.on("swipedown",function(){
+			swipe = "s";
+			socket.emit("key",swipe);
+});
+
 
 	//Event to change name
 	$("#nameSubmit").click(function(){

@@ -67,7 +67,12 @@ io.on("connection", function(socket) {
 		player.name = name.name;
 		player.color = name.playerColor;
 		console.log("Player "+oldName+" is now "+player.name);
-		io.sockets.emit("New Player",players)
+		io.sockets.emit("New Player",players);
+		var names={
+			nameOld:oldName,
+			nameNew:player.name
+		}
+		io.sockets.emit("New Log Name",names);
 	});
 
 	//Add new player to array
@@ -82,6 +87,8 @@ io.on("connection", function(socket) {
 			console.log("New player with ID: "+socket.id+"has connected.");
 			//Send new player parameters to the client
 			socket.emit("New Player",players);
+			//Send connected players ID to append in log
+			io.sockets.emit("New Log Connected",players[socket.id].name);
 	});
 
 	//Player press a button
@@ -119,6 +126,8 @@ io.on("connection", function(socket) {
 		console.log("Player with ID: "+socket.id+"has quit the game.");
 		//Let client know to remove specific player
 		io.sockets.emit("Disconnected",socket.id);
+		//Send disconnected players ID to append in log
+		io.sockets.emit("New Log Disconnected",players[socket.id].name);
 		//remove player from server
 		delete players[socket.id];
 	});
