@@ -115,6 +115,20 @@ io.on("connection", function(socket) {
 		if(!right && key == 'd' || !right && key == 'rightButton'){
 			player.x += 1;
 		}
+
+		// If player reaches finish line (cell 9,9) reset it's position to start (cell 0,0)
+		if(player.x == 9 & player.y == 9){
+			for(var id in players){
+				players[id].x = 0;
+				players[id].y = 0;
+			}
+			//generate new maze for players
+			generateMaze();
+			//update the maze layout to everyone
+			io.sockets.emit("maze data", getMazeData());
+		}
+
+		//Update client with recent location of all players
 		io.sockets.emit("New Player",players)
 	});
 
