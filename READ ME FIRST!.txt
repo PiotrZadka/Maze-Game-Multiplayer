@@ -1,0 +1,15 @@
+Setup:
+The structure of the project is preserved. There is no need to install any additional packages. If you find any packages for any reason missing please open command line in the main project folder and run console command "npm install" to install all missing dependencies.
+
+Start:
+In order to run the game please open command line in main project folder and type "node server.js" to start the game server. There fore you will be advised to open a web browser and type a game address "http://localhost:8081".
+The game should now be loaded, maze generated, a new player sprite spawned on row 1,1 and a greeting in game log below maze displayed to connected player.
+
+Controlls:
+In order to controll the sprite player can use keys "W" to move up, "S" to move down, "A" to move left and "D" to move right. Player can use a on screen buttons visible on right side of maze each of the button is described accordingly to the direction player wish to move. Players using mobile are able to use a swipe controlls. Simply place a finger on the mobile screen where the canvas is displayed and make a swipe movement in the direction the player wishes to move. Works in the browser aswell.
+
+Multiplayer:
+Player is able to play with other via local network. Simply change the "var socket = io.connect("http://localhost:8081")" on the client side file "MapClient.js" to a var socket = io.connect("your local PC IP goes here"); in order to share the IP with other players otherwise use the localhost address. 
+
+Goal:
+Each player needs to reach the yellow finish line located in 9,9 row of the canvas. Upon reaching the finish line all players are reset to their starting possition and the new maze is generated to start the new game again.
